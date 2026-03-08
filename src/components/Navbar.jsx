@@ -1,3 +1,5 @@
+import { useEffect, useRef, useState } from 'react'
+import { gsap } from 'gsap'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
 
 export default function Navbar() {
@@ -29,6 +31,7 @@ export default function Navbar() {
         e.preventDefault()
         if (location.pathname !== '/') {
             navigate('/#' + id.toLowerCase())
+            // Brief timeout to allow navigation before scroll
             setTimeout(() => {
                 const el = document.getElementById(id.toLowerCase())
                 if (el) el.scrollIntoView({ behavior: 'smooth' })
@@ -43,7 +46,6 @@ export default function Navbar() {
         setMenuOpen(false)
     }
 
-
     return (
         <>
             <nav
@@ -55,14 +57,14 @@ export default function Navbar() {
             >
                 <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
                     {/* Logo */}
-                    <div ref={logoRef} className="flex flex-col leading-none">
+                    <Link to="/" className="flex flex-col leading-none" data-cursor-hover>
                         <span className="font-playfair font-900 text-2xl tracking-[0.15em] text-warm-white">
                             BARBER
                         </span>
                         <span className="font-cormorant text-xs tracking-[0.5em] shimmer-text font-300">
                             1 9 2 7
                         </span>
-                    </div>
+                    </Link>
 
                     {/* Desktop Links */}
                     <div className="hidden md:flex items-center gap-10">
@@ -71,7 +73,7 @@ export default function Navbar() {
                             className="font-inter text-xs tracking-[0.25em] uppercase text-warm-gray hover:text-gold transition-colors duration-300 relative group"
                             data-cursor-hover
                         >
-                            Gallery
+                            Portfolio
                             <span className="absolute -bottom-1 left-0 w-0 h-px bg-gold transition-all duration-300 group-hover:w-full" />
                         </Link>
                         {navLinks.map((link, i) => (
@@ -87,10 +89,8 @@ export default function Navbar() {
                                 <span className="absolute -bottom-1 left-0 w-0 h-px bg-gold transition-all duration-300 group-hover:w-full" />
                             </a>
                         ))}
-
                         <a
                             href="tel:+1234567890"
-                            ref={el => linksRef.current[navLinks.length] = el}
                             className="magnetic-btn px-6 py-2.5 border border-gold/60 text-gold font-inter text-xs tracking-[0.25em] uppercase hover:bg-gold hover:text-obsidian transition-all duration-300"
                             data-cursor-hover
                         >
@@ -114,11 +114,18 @@ export default function Navbar() {
             {/* Mobile Menu */}
             <div className={`fixed inset-0 z-40 bg-obsidian/98 backdrop-blur-xl flex flex-col items-center justify-center gap-10 transition-all duration-500 md:hidden ${menuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}>
                 <Link
+                    to="/"
+                    onClick={() => setMenuOpen(false)}
+                    className="font-playfair text-4xl text-warm-white hover:text-gold transition-colors duration-300 tracking-widest"
+                >
+                    Home
+                </Link>
+                <Link
                     to="/gallery"
                     onClick={() => setMenuOpen(false)}
                     className="font-playfair text-4xl text-warm-white hover:text-gold transition-colors duration-300 tracking-widest"
                 >
-                    Gallery
+                    Portfolio
                 </Link>
                 {navLinks.map((link) => (
                     <a
@@ -130,14 +137,6 @@ export default function Navbar() {
                         {link}
                     </a>
                 ))}
-
-                <a
-                    href="tel:+1234567890"
-                    className="mt-4 px-10 py-4 border border-gold text-gold font-inter text-sm tracking-widest uppercase hover:bg-gold hover:text-obsidian transition-all duration-300"
-                    onClick={() => setMenuOpen(false)}
-                >
-                    Call Now
-                </a>
             </div>
         </>
     )
