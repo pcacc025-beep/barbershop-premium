@@ -61,7 +61,7 @@ export default function LandingPage() {
 
             <main>
                 <HeroSection />
-                <ScrollStory />
+                <div id="about"><ScrollStory /></div>
                 <ParallaxShowcase />
                 <ServicesSection />
                 <HorizontalScroll />
