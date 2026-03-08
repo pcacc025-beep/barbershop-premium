@@ -1,0 +1,199 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─── Design Tokens ─── */
+:root {
+  --color-obsidian: #0A0A0A;
+  --color-obsidian-100: #111111;
+  --color-obsidian-200: #1A1A1A;
+  --color-gold: #C9A84C;
+  --color-gold-light: #E2C97E;
+  --color-gold-dark: #9B7E33;
+  --color-warm-white: #F5F0E8;
+  --color-warm-cream: #EDE4D0;
+  --color-warm-gray: #8A8070;
+  --font-playfair: 'Playfair Display', Georgia, serif;
+  --font-inter: 'Inter', system-ui, sans-serif;
+  --font-cormorant: 'Cormorant Garamond', Georgia, serif;
+}
+
+/* ─── Base Reset ─── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: auto;
+  /* Lenis handles this */
+  color-scheme: dark;
+}
+
+body {
+  background-color: var(--color-obsidian);
+  color: var(--color-warm-white);
+  font-family: var(--font-inter);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  cursor: none;
+  /* Custom cursor active */
+}
+
+/* ─── Custom Scrollbar ─── */
+::-webkit-scrollbar {
+  width: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-obsidian-100);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-gold-dark);
+  border-radius: 2px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-gold);
+}
+
+/* ─── Noise/Grain Overlay ─── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.35;
+}
+
+/* ─── Custom Cursor ─── */
+.cursor-dot {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 8px;
+  height: 8px;
+  background: var(--color-gold);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 99999;
+  transform: translate(-50%, -50%);
+  transition: width 0.2s, height 0.2s, background 0.2s;
+  mix-blend-mode: difference;
+}
+
+.cursor-ring {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 38px;
+  height: 38px;
+  border: 1.5px solid rgba(201, 168, 76, 0.6);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 99998;
+  transform: translate(-50%, -50%);
+  transition: width 0.3s, height 0.3s, border-color 0.3s;
+}
+
+.cursor-dot.hover {
+  width: 14px;
+  height: 14px;
+}
+
+.cursor-ring.hover {
+  width: 56px;
+  height: 56px;
+  border-color: var(--color-gold);
+}
+
+/* ─── Gold Text Gradient ─── */
+.gold-text {
+  background: linear-gradient(135deg, var(--color-gold-dark) 0%, var(--color-gold-light) 50%, var(--color-gold-dark) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ─── Shimmer Effect ─── */
+.shimmer-text {
+  background: linear-gradient(90deg, var(--color-gold-dark) 25%, var(--color-gold-light) 50%, var(--color-gold-dark) 75%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: shimmer 3s linear infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 0% center;
+  }
+
+  100% {
+    background-position: 200% center;
+  }
+}
+
+/* ─── Gold Divider ─── */
+.gold-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--color-gold), transparent);
+}
+
+/* ─── Section fade-in utility ─── */
+.reveal-hidden {
+  opacity: 0;
+  transform: translateY(40px);
+}
+
+/* ─── Magnetic button base ─── */
+.magnetic-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  cursor: none;
+  transition: transform 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.magnetic-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(201, 168, 76, 0.15), rgba(201, 168, 76, 0));
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.magnetic-btn:hover::before {
+  opacity: 1;
+}
+
+/* ─── Image cinematic overlay ─── */
+.cinematic-img {
+  position: relative;
+  overflow: hidden;
+}
+
+.cinematic-img::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 40%, rgba(10, 10, 10, 0.8) 100%);
+}
+
+/* ─── Hide default cursor on interactive elements ─── */
+a,
+button,
+[role="button"] {
+  cursor: none;
+}
