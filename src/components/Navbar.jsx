@@ -1,5 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
-import { gsap } from 'gsap'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
 
 export default function Navbar() {
     const navRef = useRef(null)
@@ -7,8 +6,10 @@ export default function Navbar() {
     const linksRef = useRef([])
     const [menuOpen, setMenuOpen] = useState(false)
     const [scrolled, setScrolled] = useState(false)
+    const navigate = useNavigate()
+    const location = useLocation()
 
-    const navLinks = ['Services', 'Gallery', 'About', 'Testimonials', 'Contact']
+    const navLinks = ['Services', 'About', 'Testimonials', 'Contact']
 
     useEffect(() => {
         // Entrance animation
@@ -26,13 +27,22 @@ export default function Navbar() {
 
     const handleNavClick = (e, id) => {
         e.preventDefault()
-        const el = document.getElementById(id.toLowerCase())
-        if (el) {
-            const top = el.getBoundingClientRect().top + window.scrollY - 80
-            window.scrollTo({ top, behavior: 'smooth' })
+        if (location.pathname !== '/') {
+            navigate('/#' + id.toLowerCase())
+            setTimeout(() => {
+                const el = document.getElementById(id.toLowerCase())
+                if (el) el.scrollIntoView({ behavior: 'smooth' })
+            }, 100)
+        } else {
+            const el = document.getElementById(id.toLowerCase())
+            if (el) {
+                const top = el.getBoundingClientRect().top + window.scrollY - 80
+                window.scrollTo({ top, behavior: 'smooth' })
+            }
         }
         setMenuOpen(false)
     }
+
 
     return (
         <>
@@ -56,6 +66,14 @@ export default function Navbar() {
 
                     {/* Desktop Links */}
                     <div className="hidden md:flex items-center gap-10">
+                        <Link
+                            to="/gallery"
+                            className="font-inter text-xs tracking-[0.25em] uppercase text-warm-gray hover:text-gold transition-colors duration-300 relative group"
+                            data-cursor-hover
+                        >
+                            Gallery
+                            <span className="absolute -bottom-1 left-0 w-0 h-px bg-gold transition-all duration-300 group-hover:w-full" />
+                        </Link>
                         {navLinks.map((link, i) => (
                             <a
                                 key={link}
@@ -69,6 +87,7 @@ export default function Navbar() {
                                 <span className="absolute -bottom-1 left-0 w-0 h-px bg-gold transition-all duration-300 group-hover:w-full" />
                             </a>
                         ))}
+
                         <a
                             href="tel:+1234567890"
                             ref={el => linksRef.current[navLinks.length] = el}
@@ -94,6 +113,13 @@ export default function Navbar() {
 
             {/* Mobile Menu */}
             <div className={`fixed inset-0 z-40 bg-obsidian/98 backdrop-blur-xl flex flex-col items-center justify-center gap-10 transition-all duration-500 md:hidden ${menuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}>
+                <Link
+                    to="/gallery"
+                    onClick={() => setMenuOpen(false)}
+                    className="font-playfair text-4xl text-warm-white hover:text-gold transition-colors duration-300 tracking-widest"
+                >
+                    Gallery
+                </Link>
                 {navLinks.map((link) => (
                     <a
                         key={link}
@@ -104,6 +130,7 @@ export default function Navbar() {
                         {link}
                     </a>
                 ))}
+
                 <a
                     href="tel:+1234567890"
                     className="mt-4 px-10 py-4 border border-gold text-gold font-inter text-sm tracking-widest uppercase hover:bg-gold hover:text-obsidian transition-all duration-300"
