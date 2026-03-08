@@ -1,11 +1,13 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion'
 
 gsap.registerPlugin(ScrollTrigger)
 
-const galleryImages = [
+import { supabase } from '../lib/supabaseClient'
+
+const staticGallery = [
     {
         src: 'https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=700&q=85&auto=format&fit=crop',
         alt: 'Premium barbershop interior',
@@ -37,6 +39,7 @@ const galleryImages = [
         span: '',
     },
 ]
+
 
 function TiltCard({ image, index }) {
     const cardRef = useRef(null)
@@ -145,6 +148,31 @@ function TiltCard({ image, index }) {
 export default function GallerySection() {
     const sectionRef = useRef(null)
     const headRef = useRef(null)
+    const [images, setImages] = useState(staticGallery)
+
+    useEffect(() => {
+        fetchGallery()
+    }, [])
+
+    const fetchGallery = async () => {
+        const { data, error } = await supabase
+            .from('gallery_images')
+            .select('*')
+            .order('created_at', { ascending: false })
+
+        if (data && data.length > 0) {
+            const formatted = data.map(item => ({
+                src: item.image_url,
+                alt: item.title,
+                label: item.category || 'Portfolio',
+                span: '', // Dynamic spans could be added later
+                id: item.id
+            }))
+            // Merge dynamic with static or just show dynamic? 
+            // Let's show dynamic first, then static as fallback or additional.
+            setImages([...formatted, ...staticGallery])
+        }
+    }
 
     useEffect(() => {
         // Header — word-by-word stagger
@@ -199,8 +227,8 @@ export default function GallerySection() {
 
                 {/* Masonry Grid */}
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4" style={{ gridAutoRows: '240px' }}>
-                    {galleryImages.map((img, i) => (
-                        <TiltCard key={i} image={img} index={i} />
+                    {images.map((img, i) => (
+                        <TiltCard key={img.id || i} image={img} index={i} />
                     ))}
                 </div>
             </div>
