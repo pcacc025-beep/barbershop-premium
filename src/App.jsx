@@ -16,6 +16,7 @@ import HorizontalScroll from './components/HorizontalScroll'
 import GallerySection from './components/GallerySection'
 import TestimonialsSection from './components/TestimonialsSection'
 import CTASection from './components/CTASection'
+import ContactSection from './components/ContactSection'
 import Footer from './components/Footer'
 
 // Register GSAP plugins
@@ -80,6 +81,7 @@ export default function App() {
         <GallerySection />
         <TestimonialsSection />
         <CTASection />
+        <ContactSection />
       </main>
 
       <Footer />
