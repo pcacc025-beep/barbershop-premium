@@ -67,7 +67,7 @@ export default function ContactSection() {
         setError(null)
 
         try {
-            const { data, error: sbError } = await supabase
+            const { error: sbError } = await supabase
                 .from('contacts')
                 .insert([
                     {
@@ -84,7 +84,10 @@ export default function ContactSection() {
             setFormData({ name: '', email: '', service: 'General Inquiry', message: '' })
         } catch (err) {
             console.error('Error submitting to Supabase:', err)
-            setError('Something went wrong. Please try again later.')
+            const friendlyMessage = err.message.includes('404')
+                ? 'Database table "contacts" not found. Did you run the SQL script in Supabase?'
+                : (err.message || 'Connection failed. Please check your internet or Supabase settings.')
+            setError(friendlyMessage)
         } finally {
             setLoading(false)
         }
@@ -208,12 +211,12 @@ export default function ContactSection() {
                             ) : submitted ? (
                                 <>
                                     <CheckCircle size={18} />
-                                    <span>Sent Successfully</span>
+                                    <span>SUBMITTED</span>
                                 </>
                             ) : (
                                 <>
                                     <Send size={16} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-300" />
-                                    <span>Send Message</span>
+                                    <span>SUBMIT INQUIRY</span>
                                 </>
                             )}
                         </button>
